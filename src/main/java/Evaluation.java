@@ -1,7 +1,5 @@
 import com.github.bhlangonijr.chesslib.*;
 
-import java.util.Arrays;
-import java.util.Collections;
 
 public class Evaluation {
     public static final int[] pawns = {
@@ -102,16 +100,17 @@ public class Evaluation {
         int whiteMaterial = CountMaterial(Side.WHITE);
         int blackMaterial = CountMaterial(Side.BLACK);
 
-        //int whiteMaterialWithoutPawns = whiteMaterial - board.pawns[Board.WhiteIndex].Count * pawnValue;
-        //int blackMaterialWithoutPawns = blackMaterial - board.pawns[Board.BlackIndex].Count * pawnValue;
-        //float whiteEndgamePhaseWeight = EndgamePhaseWeight (whiteMaterialWithoutPawns);
-        //float blackEndgamePhaseWeight = EndgamePhaseWeight (blackMaterialWithoutPawns);
+        /*
+        int whiteMaterialWithoutPawns = whiteMaterial - board.pawns[Board.WhiteIndex].Count * pawnValue;
+        int blackMaterialWithoutPawns = blackMaterial - board.pawns[Board.BlackIndex].Count * pawnValue;
+        float whiteEndgamePhaseWeight = EndgamePhaseWeight (whiteMaterialWithoutPawns);
+        float blackEndgamePhaseWeight = EndgamePhaseWeight (blackMaterialWithoutPawns);
+        */
 
         whiteEval += whiteMaterial;
         whiteEval += evaluateTablesForSide(Side.WHITE);
         blackEval += blackMaterial;
         blackEval += evaluateTablesForSide(Side.BLACK);
-        //whiteEval += evaluateTables(Side.WHITE, Piece.WHITE_PAWN);
         if(board.getSideToMove() == Side.WHITE && board.isKingAttacked()) {
             whiteEval -= 25;
         }
@@ -156,18 +155,19 @@ public class Evaluation {
         return material;
     }
 
-    private int evaluateTables(Piece piece) {
+    private int evaluateTables(Piece piece, Side side) {
         int score = 0;
         var board_array = board.boardToArray();
         for(int i = 0; i < board_array.length; i++) {
             if(board_array[i] == piece) {
-                score += getTablePos(piece, i);
+                score += getTablePos(piece, i, side);
             }
         }
         return score;
     }
 
-    int getTablePos(Piece piece, int i) {
+    int getTablePos(Piece piece, int i, Side side) {
+        if(side == Side.BLACK) {i = 63 - i;}
         return switch (piece.getPieceType()) {
             case QUEEN -> queens[i];
             case PAWN -> pawns[i];
@@ -178,22 +178,23 @@ public class Evaluation {
             default -> 0;
         };
     }
-
     int evaluateTablesForSide(Side side) {
         int value = 0;
         if(side == Side.WHITE) {
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
+            value += evaluateTables(Piece.WHITE_PAWN, side);
+            value += evaluateTables(Piece.WHITE_KNIGHT, side);
+            value += evaluateTables(Piece.WHITE_BISHOP, side);
+            value += evaluateTables(Piece.WHITE_ROOK, side);
+            value += evaluateTables(Piece.WHITE_QUEEN, side);
+            value += evaluateTables(Piece.WHITE_KING, side);
         }
         if(side == Side.BLACK) {
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
-            value += evaluateTables(Piece.WHITE_PAWN);
+            value += evaluateTables(Piece.BLACK_PAWN, side);
+            value += evaluateTables(Piece.BLACK_KNIGHT, side);
+            value += evaluateTables(Piece.BLACK_BISHOP, side);
+            value += evaluateTables(Piece.BLACK_ROOK, side);
+            value += evaluateTables(Piece.BLACK_QUEEN, side);
+            value += evaluateTables(Piece.BLACK_KING, side);
         }
         return value;
     }

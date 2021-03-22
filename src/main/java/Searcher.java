@@ -8,7 +8,7 @@ import java.util.List;
 public class Searcher {
 
     final static int immediateMateScore = 100000;
-    final int ttSize = 100000;
+    final int ttSize = 1000000;
     final int posInf = 9999999;
     final int negInf = -posInf;
 
@@ -31,6 +31,9 @@ public class Searcher {
     public int numTT;
 
     boolean useSecondSearch;
+    boolean  abortSearch;
+
+    int currentIterSearchDepth;
 
     public Searcher(Board board, boolean useSecondSearch) {
         this.board = board;
@@ -40,8 +43,25 @@ public class Searcher {
         moveOrdering = new MoveOrdering(tt);
     }
 
-    int doIterativeDeepeningSearch() {
-        return 0;
+    public void doIterativeDeepeningSearch(int targetDepth) {
+        bestMoveThisItr = bestMove = invalidMove;
+        bestEvalThisItr = bestEval = 0;
+        currentIterSearchDepth = 0;
+        abortSearch  = false;
+        if(targetDepth == 0) {
+            targetDepth = Integer.MAX_VALUE;
+        }
+        for(int searchDepth = 1; searchDepth <= targetDepth; searchDepth++) {
+            SearchMoves(searchDepth, 0, negInf, posInf);
+            if(abortSearch) { break; }
+            else {
+                currentIterSearchDepth = searchDepth;
+                System.out.println("Current Depth: " + currentIterSearchDepth);
+                bestMove = bestMoveThisItr;
+
+                if(isMateScore(bestEval)) { break; }
+            }
+        }
     }
 
     int SearchMoves(int depth, int plyFromRoot, int alpha, int beta) {
@@ -157,13 +177,11 @@ public class Searcher {
     }
 
     public void doSearch(int depth) {
+        bestMoveThisItr = bestMove = invalidMove;
+        bestEvalThisItr = bestEval = 0;
         SearchMoves(depth, 0, negInf, posInf);
         bestMove = bestMoveThisItr;
         bestEval = bestEvalThisItr;
-    }
-
-    public void clearTT() {
-        tt.clear();
     }
 
     public Move getBestMove() {

@@ -24,7 +24,7 @@ public class ChessAI {
         var searcher = new Searcher(board, true);
         searcher.tt.clear();
         while(!board.isMated()) {
-            searcher.doSearch(8);
+            searcher.doIterativeDeepeningSearch(8);
             System.out.println(searcher.getBestMove());
             System.out.println(searcher.getBestEval());
             System.out.println("Positions: " + searcher.numPos);
@@ -32,7 +32,9 @@ public class ChessAI {
             System.out.println("Prunes: " + searcher.numPrunes);
             System.out.println("Table Hits: " + searcher.numTT);
             System.out.println();
+            /*
             System.out.println("Enter Move: ");
+
             var input = cnsl.nextLine();
             var moveFromInupt = new Move(input, board.getSideToMove());
             while(!board.isMoveLegal(moveFromInupt, true)) {
@@ -41,9 +43,10 @@ public class ChessAI {
                 input = cnsl.nextLine();
                 moveFromInupt = new Move(input, board.getSideToMove());
             }
-            board.doMove(moveFromInupt);
+             */
+            board.doMove(searcher.getBestMove(), true);
             System.out.println(board);
-            searcher.doSearch(8);
+            searcher.doIterativeDeepeningSearch(8);
             System.out.println(searcher.getBestMove());
             System.out.println(searcher.getBestEval());
             System.out.println("Positions: " + searcher.numPos);
