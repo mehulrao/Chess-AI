@@ -25,8 +25,8 @@ public class ChessAI {
 
         var searcher = new Searcher(board, true);
         searcher.tt.clear();
-        System.out.println("Side to play: ");
-        input = cnsl.nextLine();
+        //System.out.println("Side to play: ");
+        //input = cnsl.nextLine();
         while(!board.isMated()) {
             searcher.doIterativeDeepeningSearch(8);
             System.out.println(searcher.getBestMove());
