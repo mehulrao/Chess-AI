@@ -1,7 +1,7 @@
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.move.Move;
 
-public class TranspositionTable {
+public final class TranspositionTable {
     public final int lookupFailed = Integer.MIN_VALUE;
     public final int exact = 0;
     public final int lowerBound = 1;
@@ -19,22 +19,22 @@ public class TranspositionTable {
         entries = new Entry[size];
     }
 
-    public void clear() {
+    public final void clear() {
         for (int i  = 0; i < entries.length; i++) {
             entries[i] = new Entry();
         }
     }
 
-    public int index() {
+    public final int index() {
         long key = Math.abs(board.getZobristKey());
         return (int) (key % size);
     }
 
-    public Move getStoredMove() {
+    public final Move getStoredMove() {
         return entries[index()].move;
     }
 
-    public int lookupEvaluation(int depth, int plyFromRoot, int alpha, int beta) {
+    public final int lookupEvaluation(int depth, int plyFromRoot, int alpha, int beta) {
         Entry entry = entries[index()];
 
         if(entry.key == board.getZobristKey()) {
@@ -54,12 +54,12 @@ public class TranspositionTable {
         return lookupFailed;
     }
 
-    public void storeEval(int depth, int numPlySearched, int eval, int evalType, Move move) {
+    public final void storeEval(int depth, int numPlySearched, int eval, int evalType, Move move) {
         Entry entry = new Entry(board.getZobristKey(), correctScoreToStore(eval, numPlySearched), (byte) depth, (byte) evalType, move);
-        entries[(int)index()] = entry;
+        entries[index()] = entry;
     }
 
-    int correctScoreToStore(int score, int numPlySearched) {
+    private int correctScoreToStore(int score, int numPlySearched) {
         if(Searcher.isMateScore(score)) {
             int sign = (int) Math.signum(score);
             return(score * sign + numPlySearched) * sign;
@@ -67,7 +67,7 @@ public class TranspositionTable {
         return score;
     }
 
-    int correctRetrievedMateScore(int score, int numPlySearched) {
+    private int correctRetrievedMateScore(int score, int numPlySearched) {
         if(Searcher.isMateScore(score)) {
             int sign = (int) Math.signum(score);
             return(score * sign - numPlySearched) * sign;

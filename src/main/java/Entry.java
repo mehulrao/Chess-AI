@@ -1,7 +1,7 @@
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 
-public class Entry {
+public final class Entry {
     public final long key;
     public final int value;
     public final Move move;

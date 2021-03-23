@@ -5,10 +5,10 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 
 import java.util.List;
 
-public class Searcher {
+public final class Searcher {
 
     final static int immediateMateScore = 100000;
-    final int ttSize = 1000000;
+    final int ttSize = 49999999;
     final int posInf = 9999999;
     final int negInf = -posInf;
 
@@ -43,7 +43,7 @@ public class Searcher {
         moveOrdering = new MoveOrdering(tt);
     }
 
-    public void doIterativeDeepeningSearch(int targetDepth) {
+    public final void doIterativeDeepeningSearch(int targetDepth) {
         bestMoveThisItr = bestMove = invalidMove;
         bestEvalThisItr = bestEval = 0;
         currentIterSearchDepth = 0;
@@ -56,15 +56,15 @@ public class Searcher {
             if(abortSearch) { break; }
             else {
                 currentIterSearchDepth = searchDepth;
-                System.out.println("Current Depth: " + currentIterSearchDepth);
+                System.out.println("Current Depth: " + currentIterSearchDepth + " Num Positions: " + numPos);
                 bestMove = bestMoveThisItr;
-
+                bestEval = bestEvalThisItr;
                 if(isMateScore(bestEval)) { break; }
             }
         }
     }
 
-    int SearchMoves(int depth, int plyFromRoot, int alpha, int beta) {
+    private int SearchMoves(int depth, int plyFromRoot, int alpha, int beta) {
         if (plyFromRoot > 0) {
             if(board.isRepetition(2)) {
                 return 0;
@@ -137,7 +137,7 @@ public class Searcher {
 
     }
 
-    int searchCaptures(int alpha, int beta) {
+    private int searchCaptures(int alpha, int beta) {
         int eval = evaluation.Evaluate(board);
         numPos++;
         if(eval >= beta) {
@@ -176,7 +176,7 @@ public class Searcher {
         return Math.abs(score) > immediateMateScore - maxMateDepth;
     }
 
-    public void doSearch(int depth) {
+    public final void doSearch(int depth) {
         bestMoveThisItr = bestMove = invalidMove;
         bestEvalThisItr = bestEval = 0;
         SearchMoves(depth, 0, negInf, posInf);
@@ -184,10 +184,10 @@ public class Searcher {
         bestEval = bestEvalThisItr;
     }
 
-    public Move getBestMove() {
+    public final Move getBestMove() {
         return bestMove;
     }
-    public int getBestEval() {
+    public final int getBestEval() {
         return bestEval;
     }
 }

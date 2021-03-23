@@ -1,8 +1,8 @@
 import com.github.bhlangonijr.chesslib.*;
 
 
-public class Evaluation {
-    public static final int[] pawns = {
+public final class Evaluation {
+    private static final int[] pawns = {
             0,  0,  0,  0,  0,  0,  0,  0,
             50, 50, 50, 50, 50, 50, 50, 50,
             10, 10, 20, 30, 30, 20, 10, 10,
@@ -13,7 +13,7 @@ public class Evaluation {
             0,  0,  0,  0,  0,  0,  0,  0
     };
 
-    public static final int[] knights = {
+    private static final int[] knights = {
             -50,-40,-30,-30,-30,-30,-40,-50,
             -40,-20,  0,  0,  0,  0,-20,-40,
             -30,  0, 10, 15, 15, 10,  0,-30,
@@ -24,7 +24,7 @@ public class Evaluation {
             -50,-40,-30,-30,-30,-30,-40,-50,
     };
 
-    public static final int[] bishops = {
+    private static final int[] bishops = {
             -20,-10,-10,-10,-10,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
             -10,  0,  5, 10, 10,  5,  0,-10,
@@ -35,7 +35,7 @@ public class Evaluation {
             -20,-10,-10,-10,-10,-10,-10,-20,
     };
 
-    public static final int[] rooks = {
+    private static final int[] rooks = {
             0,  0,  0,  0,  0,  0,  0,  0,
             5, 10, 10, 10, 10, 10, 10,  5,
             -5,  0,  0,  0,  0,  0,  0, -5,
@@ -46,7 +46,7 @@ public class Evaluation {
             0,  0,  0,  5,  5,  0,  0,  0
     };
 
-    public static final int[] queens = {
+    private static final int[] queens = {
             -20,-10,-10, -5, -5,-10,-10,-20,
             -10,  0,  0,  0,  0,  0,  0,-10,
             -10,  0,  5,  5,  5,  5,  0,-10,
@@ -57,7 +57,7 @@ public class Evaluation {
             -20,-10,-10, -5, -5,-10,-10,-20
     };
 
-    public static final int[] kingMiddle = {
+    private static final int[] kingMiddle = {
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
@@ -68,7 +68,7 @@ public class Evaluation {
             20, 30, 10,  0,  0, 10, 30, 20
     };
 
-    public static final int[] kingEnd = {
+    private static final int[] kingEnd = {
             -50,-40,-30,-20,-20,-30,-40,-50,
             -30,-20,-10,  0,  0,-10,-20,-30,
             -30,-10, 20, 30, 30, 20,-10,-30,
@@ -88,11 +88,7 @@ public class Evaluation {
     final float endgameMaterialStart = rookValue * 2 + bishopValue + knightValue;
     Board board;
 
-    // Performs static evaluation of the current position.
-    // The position is assumed to be 'quiet', i.e no captures are available that could drastically affect the evaluation.
-    // The score that's returned is given from the perspective of whoever's turn it is to move.
-    // So a positive score means the player who's turn it is to move has an advantage, while a negative score indicates a disadvantage.
-    public int Evaluate (Board board) {
+    public final int Evaluate (Board board) {
         this.board = board;
         int whiteEval = 0;
         int blackEval = 0;
@@ -155,19 +151,19 @@ public class Evaluation {
         return material;
     }
 
-    private int evaluateTables(Piece piece, Side side) {
+    private int evaluateTables(Side side) {
         int score = 0;
         var board_array = board.boardToArray();
         for(int i = 0; i < board_array.length; i++) {
-            if(board_array[i] == piece) {
-                score += getTablePos(piece, i, side);
+            if(board_array[i].getPieceSide() == side) {
+                score += getTablePos(board_array[i], i, side);
             }
         }
         return score;
     }
 
-    int getTablePos(Piece piece, int i, Side side) {
-        if(side == Side.BLACK) {i = 63 - i;}
+    private int getTablePos(Piece piece, int i, Side side) {
+        if(side == Side.WHITE) {i = 63 - i;}
         return switch (piece.getPieceType()) {
             case QUEEN -> queens[i];
             case PAWN -> pawns[i];
@@ -178,23 +174,13 @@ public class Evaluation {
             default -> 0;
         };
     }
-    int evaluateTablesForSide(Side side) {
+    private int evaluateTablesForSide(Side side) {
         int value = 0;
         if(side == Side.WHITE) {
-            value += evaluateTables(Piece.WHITE_PAWN, side);
-            value += evaluateTables(Piece.WHITE_KNIGHT, side);
-            value += evaluateTables(Piece.WHITE_BISHOP, side);
-            value += evaluateTables(Piece.WHITE_ROOK, side);
-            value += evaluateTables(Piece.WHITE_QUEEN, side);
-            value += evaluateTables(Piece.WHITE_KING, side);
+            value += evaluateTables(Side.WHITE);
         }
         if(side == Side.BLACK) {
-            value += evaluateTables(Piece.BLACK_PAWN, side);
-            value += evaluateTables(Piece.BLACK_KNIGHT, side);
-            value += evaluateTables(Piece.BLACK_BISHOP, side);
-            value += evaluateTables(Piece.BLACK_ROOK, side);
-            value += evaluateTables(Piece.BLACK_QUEEN, side);
-            value += evaluateTables(Piece.BLACK_KING, side);
+            value += evaluateTables(Side.BLACK);
         }
         return value;
     }

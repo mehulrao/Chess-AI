@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 import org.testng.annotations.Test;
 
 public class ChessAI {
+    static String input;
+
     public static void main(String[] args) {
         var cnsl = new Scanner(System.in);
         Board board = new Board();
@@ -23,6 +25,8 @@ public class ChessAI {
 
         var searcher = new Searcher(board, true);
         searcher.tt.clear();
+        System.out.println("Side to play: ");
+        input = cnsl.nextLine();
         while(!board.isMated()) {
             searcher.doIterativeDeepeningSearch(8);
             System.out.println(searcher.getBestMove());
@@ -35,7 +39,7 @@ public class ChessAI {
             /*
             System.out.println("Enter Move: ");
 
-            var input = cnsl.nextLine();
+            input = cnsl.nextLine();
             var moveFromInupt = new Move(input, board.getSideToMove());
             while(!board.isMoveLegal(moveFromInupt, true)) {
                 System.out.println("Invalid Move");
@@ -44,16 +48,6 @@ public class ChessAI {
                 moveFromInupt = new Move(input, board.getSideToMove());
             }
              */
-            board.doMove(searcher.getBestMove(), true);
-            System.out.println(board);
-            searcher.doIterativeDeepeningSearch(8);
-            System.out.println(searcher.getBestMove());
-            System.out.println(searcher.getBestEval());
-            System.out.println("Positions: " + searcher.numPos);
-            System.out.println("Nodes: " + searcher.numNodes);
-            System.out.println("Prunes: " + searcher.numPrunes);
-            System.out.println("Table Hits: " + searcher.numTT);
-            System.out.println();
             board.doMove(searcher.getBestMove(), true);
             System.out.println(board);
         }

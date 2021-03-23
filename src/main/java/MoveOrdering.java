@@ -3,7 +3,7 @@ import com.github.bhlangonijr.chesslib.move.Move;
 
 import java.util.*;
 
-public class MoveOrdering {
+public final class MoveOrdering {
     int[] moveScores;
     final int maxMoveCnt = 100;
 
@@ -22,7 +22,7 @@ public class MoveOrdering {
         eval = new Evaluation();
     }
 
-    public void orderMoves(Board board, List<Move> moves, boolean useTT) {
+    public final void orderMoves(Board board, List<Move> moves, boolean useTT) {
         Move hashMove = invalidMove;
         if(useTT) {
             hashMove = tt.getStoredMove();
@@ -55,7 +55,7 @@ public class MoveOrdering {
         Sort(moves);
     }
 
-    int getPieceValue(Piece piece) {
+    private int getPieceValue(Piece piece) {
         return switch (piece.getPieceType()) {
             case QUEEN -> eval.queenValue;
             case PAWN -> eval.pawnValue;
@@ -66,7 +66,7 @@ public class MoveOrdering {
         };
     }
 
-    int getPromotionValue(PieceType pt) {
+    private int getPromotionValue(PieceType pt) {
         return switch (pt) {
             case QUEEN -> eval.queenValue;
             case PAWN -> eval.pawnValue;
@@ -77,7 +77,7 @@ public class MoveOrdering {
         };
     }
 
-    void Sort(List<Move> moves) {
+    private void Sort(List<Move> moves) {
         for (int i = 0; i < moves.size() - 1; i++) {
             for (int j = i + 1; j > 0; j--) {
                 int swapIndex = j - 1;
