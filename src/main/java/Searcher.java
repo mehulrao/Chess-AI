@@ -56,10 +56,12 @@ public final class Searcher {
             if(abortSearch) { break; }
             else {
                 currentIterSearchDepth = searchDepth;
-                System.out.println("Current Depth: " + currentIterSearchDepth + " Num Positions: " + numPos);
+                System.out.println("Current Depth: " + currentIterSearchDepth + " Num Positions: " + numNodes);
                 bestMove = bestMoveThisItr;
                 bestEval = bestEvalThisItr;
-                if(isMateScore(bestEval)) { break; }
+                if(isMateScore(bestEval)) {
+                    break;
+                }
             }
         }
     }

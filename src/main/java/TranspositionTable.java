@@ -1,5 +1,6 @@
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.move.Move;
+import java.lang.Integer;
 
 public final class TranspositionTable {
     public final int lookupFailed = Integer.MIN_VALUE;
@@ -26,8 +27,8 @@ public final class TranspositionTable {
     }
 
     public final int index() {
-        long key = Math.abs(board.getZobristKey());
-        return (int) (key % size);
+        long key = (board.getZobristKey());
+        return (int) Long.remainderUnsigned(key, size);
     }
 
     public final Move getStoredMove() {

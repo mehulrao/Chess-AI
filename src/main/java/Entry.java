@@ -2,11 +2,11 @@ import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 
 public final class Entry {
-    public final long key;
-    public final int value;
-    public final Move move;
-    public final byte depth;
-    public final byte nodeType;
+    public long key;
+    public int value;
+    public Move move;
+    public byte depth;
+    public byte nodeType;
 
     public Entry(long key, int value, byte depth, byte nodeType, Move move) {
         this.key = key;
