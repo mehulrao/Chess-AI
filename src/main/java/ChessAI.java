@@ -13,7 +13,7 @@ public class ChessAI {
 
     public static void main(String[] args) {
         Board board = new Board();
-        board.loadFromFen("r1bqk2r/ppp2ppp/2np1n2/1B2p3/1b2P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 6");
+        board.loadFromFen("r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/3P1N2/PPP2PPP/RNBQKB1R w KQkq - 1 4"); // Set baord fen
         System.out.println(board);
         if(board.isMated()) {
             System.out.println("Mate");
@@ -26,10 +26,9 @@ public class ChessAI {
         searcher.tt.clear();
 
         while(!board.isMated()) {
-            aiMove(searcher, board);
+            aiMove(searcher, board); // AI plays white -- Switch this with doPlayerMove if you want the bot to play black
             System.out.println(board);
             System.out.println();
-            printSearch(searcher);
             doPlayerMove(board);
             System.out.println(board);
         }
