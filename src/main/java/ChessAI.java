@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
 
 import static org.junit.Assert.*;
 import org.testng.annotations.Test;
@@ -11,9 +12,9 @@ import org.testng.annotations.Test;
 public class ChessAI {
     static String input;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
-        board.loadFromFen("r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/3P1N2/PPP2PPP/RNBQKB1R w KQkq - 1 4"); // Set baord fen
+        board.loadFromFen("8/5pR1/5P1p/7b/2BP1k2/8/7P/1r4K1 w - - 12 49"); // Set baord fen
         System.out.println(board);
         if(board.isMated()) {
             System.out.println("Mate");
@@ -59,13 +60,21 @@ public class ChessAI {
         assertEquals(2103487, nodes);
     }
 
-    private static void aiMove(Searcher searcher, Board board) {
+    private static void aiMove(Searcher searcher, Board board) throws InterruptedException {
         printSearch(searcher);
         board.doMove(searcher.getBestMove(), true);
     }
 
-    private static void printSearch(Searcher searcher) {
-        searcher.doIterativeDeepeningSearch(8);
+    private static void printSearch(Searcher searcher) throws InterruptedException {
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                searcher.doIterativeDeepeningSearch(0);
+            }
+        });
+        t1.start();
+        timedStop(7000, searcher);
+        t1.join();
         System.out.println(searcher.getBestMove());
         System.out.println(searcher.getBestEval());
         System.out.println("Positions: " + searcher.numPos);
@@ -87,5 +96,19 @@ public class ChessAI {
             moveFromInupt = new Move(input, board.getSideToMove());
         }
         board.doMove(moveFromInupt);
+    }
+
+    static void timedStop(int time, Searcher searcher) {
+        Timer t = new java.util.Timer();
+        t.schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        searcher.endSearch();
+                        t.cancel();
+                    }
+                },
+                time
+        );
     }
 }

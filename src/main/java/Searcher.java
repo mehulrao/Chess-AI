@@ -44,6 +44,11 @@ public final class Searcher {
     }
 
     public final void doIterativeDeepeningSearch(int targetDepth) {
+        numNodes = 0;
+        numPos = 0;
+        numSafePos = 0;
+        numTT = 0;
+        numPrunes = 0;
         bestMoveThisItr = bestMove = invalidMove;
         bestEvalThisItr = bestEval = 0;
         currentIterSearchDepth = 0;
@@ -53,7 +58,7 @@ public final class Searcher {
         }
         for(int searchDepth = 1; searchDepth <= targetDepth; searchDepth++) {
             SearchMoves(searchDepth, 0, negInf, posInf);
-            if(abortSearch) { break; }
+            if(abortSearch) {break;}
             else {
                 currentIterSearchDepth = searchDepth;
                 System.out.println("Current Depth: " + currentIterSearchDepth + " Num Positions: " + numNodes);
@@ -67,6 +72,7 @@ public final class Searcher {
     }
 
     private int SearchMoves(int depth, int plyFromRoot, int alpha, int beta) {
+        if(abortSearch) {return 0;}
         if (plyFromRoot > 0) {
             if(board.isRepetition(2)) {
                 return 0;
@@ -103,7 +109,7 @@ public final class Searcher {
             int mateScore = immediateMateScore - plyFromRoot;
             return -mateScore;
         }
-        else if(board.isStaleMate()) {
+        else if(board.isDraw()) {
             return 0;
         }
 
@@ -191,5 +197,9 @@ public final class Searcher {
     }
     public final int getBestEval() {
         return bestEval;
+    }
+
+    public void endSearch() {
+        abortSearch = true;
     }
 }
