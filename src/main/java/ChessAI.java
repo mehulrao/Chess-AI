@@ -12,9 +12,11 @@ import org.testng.annotations.Test;
 public class ChessAI {
     static String input;
 
+    private final static int time = 5000;
+
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
-        board.loadFromFen("8/5pR1/5P1p/7b/2BP1k2/8/7P/1r4K1 w - - 12 49"); // Set baord fen
+        //board.loadFromFen("r6k/7p/8/3PPp2/1P2P1n1/P3Pqr1/2P4K/R2R4 w - - 2 31"); // Set board fen
         System.out.println(board);
         if(board.isMated()) {
             System.out.println("Mate");
@@ -73,7 +75,7 @@ public class ChessAI {
             }
         });
         t1.start();
-        timedStop(7000, searcher);
+        timedStop(searcher);
         t1.join();
         System.out.println(searcher.getBestMove());
         System.out.println(searcher.getBestEval());
@@ -98,7 +100,7 @@ public class ChessAI {
         board.doMove(moveFromInupt);
     }
 
-    static void timedStop(int time, Searcher searcher) {
+    static void timedStop(Searcher searcher) {
         Timer t = new java.util.Timer();
         t.schedule(
                 new java.util.TimerTask() {
@@ -108,7 +110,7 @@ public class ChessAI {
                         t.cancel();
                     }
                 },
-                time
+                ChessAI.time
         );
     }
 }
